@@ -1,65 +1,160 @@
-import Image from "next/image";
+"use client";
+
+import { Hero } from "@/components/magicui/hero";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
+  const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    // TODO: Add backend integration
+    console.log("Sign up:", email);
+    alert("Thank you for your interest! We'll notify you when we launch.");
+    e.currentTarget.reset();
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="flex min-h-screen flex-col">
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
+        <Hero
+          title="Build Confidence in Every Conversation"
+          description="Your personal AI-powered communication coach. Practice interviews, master important conversations, and express yourself with confidence—tailored feedback for job seekers and early-career professionals."
+          badge="Coming Soon"
+          className="border-0 bg-transparent p-0"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+      </section>
+
+      {/* Problem & Audience Section */}
+      <section className="container mx-auto px-4 py-12 md:py-16" aria-labelledby="problem-heading">
+        <div className="mx-auto max-w-4xl">
+          <Card>
+            <CardHeader>
+              <Badge variant="secondary" className="mb-4 w-fit">
+                The Challenge
+              </Badge>
+              <CardTitle asChild>
+                <h2 id="problem-heading" className="text-2xl md:text-3xl">
+                  Interview Anxiety Holds You Back
+                </h2>
+              </CardTitle>
+              <CardDescription className="text-base md:text-lg">
+                Many people feel anxious during interviews and important conversations because they struggle to express themselves clearly and confidently.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <p className="text-muted-foreground">
+                  Our focus is on <strong className="text-foreground">job seekers</strong> and <strong className="text-foreground">early-career professionals</strong> who need to make a strong impression but often feel unsure or overwhelmed.
+                </p>
+                <Separator />
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="outline">Job Seekers</Badge>
+                  <Badge variant="outline">Early-Career Professionals</Badge>
+                  <Badge variant="outline">Interview Preparation</Badge>
+                  <Badge variant="outline">Communication Skills</Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Solution Section */}
+      <section className="container mx-auto px-4 py-12 md:py-16" aria-labelledby="solution-heading">
+        <div className="mx-auto max-w-4xl">
+          <Card>
+            <CardHeader>
+              <Badge variant="secondary" className="mb-4 w-fit">
+                How We Help
+              </Badge>
+              <CardTitle asChild>
+                <h2 id="solution-heading" className="text-2xl md:text-3xl">
+                  Your Personal Communication Coach
+                </h2>
+              </CardTitle>
+              <CardDescription className="text-base md:text-lg">
+                A supportive AI-powered platform that helps you build confidence and improve your communication skills through personalized practice and feedback.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div className="grid gap-6 md:grid-cols-3">
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-lg">Understands You</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Recognizes your emotional state and adapts to your needs.
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-lg">Real Practice</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Simulates real-life situations like job interviews and professional conversations.
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-lg">Tailored Feedback</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Provides personalized guidance to help you improve and build confidence.
+                    </p>
+                  </div>
+                </div>
+                <Separator />
+                <p className="text-muted-foreground">
+                  Specifically designed for high-stakes situations like job interviews and professional conversations, helping you make the strong impression you deserve.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </main>
+      </section>
+
+      {/* Call to Action Section */}
+      <section className="container mx-auto px-4 py-12 md:py-16" aria-labelledby="cta-heading">
+        <div className="mx-auto max-w-2xl">
+          <Card>
+            <CardHeader className="text-center">
+              <CardTitle asChild>
+                <h2 id="cta-heading" className="text-2xl md:text-3xl">
+                  Be the First to Know
+                </h2>
+              </CardTitle>
+              <CardDescription className="text-base md:text-lg">
+                Join our waitlist and get notified when we launch. Start building your communication confidence today.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSignUp} className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="email" className="sr-only">
+                    Email address
+                  </label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Enter your email address"
+                    required
+                    aria-label="Email address"
+                    className="w-full"
+                  />
+                </div>
+                <Button type="submit" size="lg" className="w-full">
+                  Join Waitlist
+                </Button>
+                <p className="text-center text-xs text-muted-foreground">
+                  We respect your privacy. Unsubscribe at any time.
+                </p>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
     </div>
   );
 }
