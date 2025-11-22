@@ -23,8 +23,8 @@ export default function Home() {
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
         <Hero
-          title="Build Confidence in Every Conversation"
-          description="Your personal AI-powered communication coach. Practice interviews, master important conversations, and express yourself with confidence—tailored feedback for job seekers and early-career professionals."
+          title="Speak with Confidence in Every Interview"
+          description="Turn interview anxiety into confident, clear communication. Practice realistic interview scenarios with an AI coach that understands your goals and gives you tailored feedback."
           badge="Coming Soon"
           className="border-0 bg-transparent p-0"
         />
