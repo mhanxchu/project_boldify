@@ -62,6 +62,7 @@ const config: Config = {
           light: "hsl(var(--color-gold-light))",
           dark: "hsl(var(--color-gold-dark))",
           subtle: "hsl(var(--color-gold-subtle))",
+          text: "hsl(var(--color-gold-text))",
         },
       },
       borderRadius: {

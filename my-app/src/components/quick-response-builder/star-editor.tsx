@@ -83,13 +83,13 @@ export function StarEditor({
   const getCharacterCount = (text: string) => text.length;
 
   return (
-    <div className={cn("space-y-8 lg:space-y-10", className)}>
+    <div className={cn("space-y-6 sm:space-y-8 lg:space-y-10", className)}>
       <Card id="star-editor-heading" className="border border-border/50 shadow-sm">
-        <CardHeader className="space-y-4 pb-8">
-          <CardTitle className="font-serif-heading text-3xl">Build Your Answer</CardTitle>
-          <CardDescription className="font-serif-body text-lg leading-relaxed">{question.question}</CardDescription>
+        <CardHeader className="space-y-3 sm:space-y-4 pb-6 sm:pb-8">
+          <CardTitle className="font-serif-heading text-2xl sm:text-3xl">Build Your Answer</CardTitle>
+          <CardDescription className="font-serif-body text-base sm:text-lg leading-relaxed">{question.question}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-10">
+        <CardContent className="space-y-8 sm:space-y-10">
           {sections.map((section, index) => {
             const wordCount = getWordCount(section.value);
             const charCount = getCharacterCount(section.value);
@@ -99,25 +99,25 @@ export function StarEditor({
             return (
               <div key={section.label} className="space-y-4">
                 {index > 0 && <Separator className="my-6 bg-border/50" />}
-                <div className="flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center justify-between flex-wrap gap-2 sm:gap-3">
                   <label 
                     htmlFor={`star-${sectionId}`}
-                    className="font-serif-heading text-lg font-semibold text-foreground"
+                    className="font-serif-heading text-base sm:text-lg font-semibold text-foreground"
                   >
                     {section.label}
                   </label>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <Badge 
                       variant="outline" 
-                      className="text-xs font-serif-body tabular-nums border-gold/30 text-gold-dark"
-                      aria-label={`${wordCount} words`}
+                      className="text-xs font-serif-body tabular-nums border-gold/40 text-gold-text focus-visible:ring-gold/50 focus-visible:ring-[3px]"
+                      aria-label={`${wordCount} words in ${section.label} section`}
                     >
                       {wordCount} words
                     </Badge>
                     <Badge 
                       variant="outline" 
-                      className="text-xs font-serif-body tabular-nums border-gold/30 text-gold-dark"
-                      aria-label={`${charCount} characters`}
+                      className="text-xs font-serif-body tabular-nums border-gold/40 text-gold-text focus-visible:ring-gold/50 focus-visible:ring-[3px]"
+                      aria-label={`${charCount} characters in ${section.label} section`}
                     >
                       {charCount} chars
                     </Badge>
@@ -125,7 +125,7 @@ export function StarEditor({
                 </div>
                 <p 
                   id={`${sectionId}-prompt`}
-                  className="font-serif-body text-base text-muted-foreground leading-relaxed"
+                  className="font-serif-body text-sm sm:text-base text-muted-foreground leading-relaxed"
                 >
                   {section.prompt}
                 </p>
@@ -137,14 +137,15 @@ export function StarEditor({
                   onChange={(e) => section.onChange(e.target.value)}
                   aria-label={`${section.label} section: ${section.prompt}`}
                   aria-describedby={`${sectionId}-prompt`}
+                  aria-required="true"
                   className={cn(
-                    "font-serif-body min-h-[140px] transition-colors resize-y text-base leading-relaxed",
-                    "border-border/50 focus-visible:ring-gold focus-visible:border-gold/50",
+                    "font-serif-body min-h-[120px] sm:min-h-[140px] transition-colors resize-y text-sm sm:text-base leading-relaxed",
+                    "border-border/50 focus-visible:ring-gold/50 focus-visible:ring-[3px] focus-visible:border-gold/60",
                     hasContent 
-                      ? "border-gold/40 bg-gold-subtle/10" 
+                      ? "border-gold/50 bg-gold-subtle/10" 
                       : ""
                   )}
-                  rows={6}
+                  rows={5}
                 />
               </div>
             );
@@ -153,8 +154,8 @@ export function StarEditor({
       </Card>
 
       <Card aria-live="polite" aria-atomic="true" className="border border-border/50 shadow-sm">
-        <CardHeader className="pb-6">
-          <CardTitle className="font-serif-heading text-2xl">Structure Progress</CardTitle>
+        <CardHeader className="pb-4 sm:pb-6">
+          <CardTitle className="font-serif-heading text-xl sm:text-2xl">Structure Progress</CardTitle>
         </CardHeader>
         <CardContent>
           <StructureIndicator

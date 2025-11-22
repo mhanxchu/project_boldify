@@ -55,12 +55,16 @@ export default function QuickResponseBuilderPage() {
     result.trim().length > 0;
 
   return (
-    <main className="container mx-auto px-4 py-12 lg:py-16 max-w-7xl bg-background">
+    <main 
+      className="container mx-auto px-4 py-12 lg:py-16 max-w-7xl bg-background"
+      role="main"
+      aria-label="Quick Response Builder"
+    >
       <header className="mb-12 lg:mb-16 space-y-4">
-        <h1 className="font-serif-heading text-5xl font-bold tracking-tight mb-4 lg:text-6xl leading-tight">
+        <h1 className="font-serif-heading text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4 leading-tight">
           Quick Response Builder
         </h1>
-        <p className="font-serif-body text-muted-foreground text-xl leading-relaxed max-w-3xl">
+        <p className="font-serif-body text-muted-foreground text-lg sm:text-xl leading-relaxed max-w-3xl">
           Build confident interview answers using the STAR method. Select a question, follow the
           prompts, and get real-time feedback on your response structure.
         </p>
@@ -100,9 +104,18 @@ export default function QuickResponseBuilderPage() {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                   <div className="space-y-2">
                     <p className="font-serif-body text-base font-semibold tabular-nums">
-                      Total: <span aria-label={`${getTotalWordCount()} words`} className="text-gold-dark">{getTotalWordCount()}</span> words
+                      Total: <span 
+                        aria-label={`${getTotalWordCount()} words`} 
+                        className="text-gold-text font-bold"
+                      >
+                        {getTotalWordCount()}
+                      </span> words
                     </p>
-                    <p className="font-serif-body text-sm text-muted-foreground">
+                    <p 
+                      className="font-serif-body text-sm text-muted-foreground"
+                      role="status"
+                      aria-live="polite"
+                    >
                       {isAnswerComplete
                         ? "✓ All STAR sections completed"
                         : "Complete all sections to copy your answer"}
@@ -112,12 +125,13 @@ export default function QuickResponseBuilderPage() {
                     onClick={handleCopyAnswer}
                     disabled={!isAnswerComplete}
                     size="lg"
-                    className="font-serif-body border border-gold/40 bg-gold/10 hover:bg-gold/20 text-foreground shadow-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed px-8 py-6 text-base tracking-wide"
+                    variant="outline"
+                    className="font-serif-body border-gold/50 bg-gold/10 hover:bg-gold/20 hover:border-gold/60 text-foreground shadow-sm disabled:opacity-50 disabled:cursor-not-allowed px-8 py-6 text-base tracking-wide focus-visible:ring-gold/50 focus-visible:ring-[3px] transition-all"
                     aria-disabled={!isAnswerComplete}
                     aria-label={
                       isAnswerComplete
-                        ? "Copy your completed answer"
-                        : "Complete all sections to copy"
+                        ? "Copy your completed answer to clipboard"
+                        : "Complete all sections to copy your answer"
                     }
                   >
                     Copy Answer
