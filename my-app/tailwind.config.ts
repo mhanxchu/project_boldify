@@ -57,6 +57,12 @@ const config: Config = {
         border: "hsl(var(--color-border))",
         input: "hsl(var(--color-input))",
         ring: "hsl(var(--color-ring))",
+        gold: {
+          DEFAULT: "hsl(var(--color-gold))",
+          light: "hsl(var(--color-gold-light))",
+          dark: "hsl(var(--color-gold-dark))",
+          subtle: "hsl(var(--color-gold-subtle))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -64,7 +70,8 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "Arial", "Helvetica", "sans-serif"],
+        "serif-heading": ["var(--font-serif-heading)", "Georgia", "serif"],
+        "serif-body": ["var(--font-serif-body)", "Georgia", "serif"],
         mono: ["var(--font-mono)", "monospace"],
       },
     },

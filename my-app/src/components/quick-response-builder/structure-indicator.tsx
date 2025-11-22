@@ -35,7 +35,7 @@ export function StructureIndicator({
       aria-live="polite"
       aria-label={`STAR structure progress: ${completedCount} of 4 sections completed`}
     >
-      <span className="text-sm font-semibold text-foreground">
+      <span className="font-serif-body text-base font-semibold text-foreground">
         STAR Structure:
       </span>
       {sections.map((section) => (
@@ -43,10 +43,10 @@ export function StructureIndicator({
           key={section.label}
           variant={section.completed ? "default" : "outline"}
           className={cn(
-            "transition-all duration-200",
+            "font-serif-body transition-all duration-300",
             section.completed 
-              ? "bg-primary text-primary-foreground shadow-sm" 
-              : "border-2"
+              ? "bg-gold/20 text-gold-dark border-gold/40 shadow-sm" 
+              : "border-2 border-border/50"
           )}
           aria-label={`${section.label} section ${section.completed ? 'completed' : 'incomplete'}`}
         >
@@ -58,7 +58,7 @@ export function StructureIndicator({
       {allComplete && (
         <Badge 
           variant="secondary" 
-          className="ml-2 animate-in fade-in duration-300"
+          className="ml-3 font-serif-body border-gold/40 text-gold-dark animate-in fade-in duration-300"
           aria-label="All sections complete"
         >
           Complete

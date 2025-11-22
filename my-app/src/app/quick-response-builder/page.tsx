@@ -55,12 +55,12 @@ export default function QuickResponseBuilderPage() {
     result.trim().length > 0;
 
   return (
-    <main className="container mx-auto px-4 py-8 lg:py-12 max-w-7xl">
-      <header className="mb-10 lg:mb-12">
-        <h1 className="text-4xl font-bold tracking-tight mb-3 lg:text-5xl">
+    <main className="container mx-auto px-4 py-12 lg:py-16 max-w-7xl bg-background">
+      <header className="mb-12 lg:mb-16 space-y-4">
+        <h1 className="font-serif-heading text-5xl font-bold tracking-tight mb-4 lg:text-6xl leading-tight">
           Quick Response Builder
         </h1>
-        <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl">
+        <p className="font-serif-body text-muted-foreground text-xl leading-relaxed max-w-3xl">
           Build confident interview answers using the STAR method. Select a question, follow the
           prompts, and get real-time feedback on your response structure.
         </p>
@@ -95,14 +95,14 @@ export default function QuickResponseBuilderPage() {
 
           {/* Action Bar */}
           {selectedQuestion && (
-            <Card aria-live="polite" aria-atomic="true">
-              <CardContent className="pt-6">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="space-y-1">
-                    <p className="text-sm font-semibold tabular-nums">
-                      Total: <span aria-label={`${getTotalWordCount()} words`}>{getTotalWordCount()}</span> words
+            <Card aria-live="polite" aria-atomic="true" className="border border-border/50 shadow-sm">
+              <CardContent className="pt-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                  <div className="space-y-2">
+                    <p className="font-serif-body text-base font-semibold tabular-nums">
+                      Total: <span aria-label={`${getTotalWordCount()} words`} className="text-gold-dark">{getTotalWordCount()}</span> words
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="font-serif-body text-sm text-muted-foreground">
                       {isAnswerComplete
                         ? "✓ All STAR sections completed"
                         : "Complete all sections to copy your answer"}
@@ -112,7 +112,7 @@ export default function QuickResponseBuilderPage() {
                     onClick={handleCopyAnswer}
                     disabled={!isAnswerComplete}
                     size="lg"
-                    className="transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="font-serif-body border border-gold/40 bg-gold/10 hover:bg-gold/20 text-foreground shadow-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed px-8 py-6 text-base tracking-wide"
                     aria-disabled={!isAnswerComplete}
                     aria-label={
                       isAnswerComplete
