@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { StructureIndicator } from "./structure-indicator";
 import { type InterviewQuestion } from "@/lib/data/interview-questions";
+import { type StarAnalysis } from "@/lib/utils/star-analyzer";
 import { cn } from "@/lib/utils";
 
 interface StarEditorProps {
@@ -18,6 +19,7 @@ interface StarEditorProps {
   onTaskChange: (value: string) => void;
   onActionChange: (value: string) => void;
   onResultChange: (value: string) => void;
+  analysis?: StarAnalysis;
   className?: string;
 }
 
@@ -31,6 +33,7 @@ export function StarEditor({
   onTaskChange,
   onActionChange,
   onResultChange,
+  analysis,
   className,
 }: StarEditorProps) {
   if (!question) {
@@ -76,6 +79,7 @@ export function StarEditor({
     },
   ];
 
+  // Use analysis if provided, otherwise calculate inline
   const getWordCount = (text: string) => {
     return text.trim().split(/\s+/).filter((word) => word.length > 0).length;
   };
@@ -159,10 +163,10 @@ export function StarEditor({
         </CardHeader>
         <CardContent>
           <StructureIndicator
-            situation={situation.trim().length > 0}
-            task={task.trim().length > 0}
-            action={action.trim().length > 0}
-            result={result.trim().length > 0}
+            situation={analysis?.situation.hasContent ?? situation.trim().length > 0}
+            task={analysis?.task.hasContent ?? task.trim().length > 0}
+            action={analysis?.action.hasContent ?? action.trim().length > 0}
+            result={analysis?.result.hasContent ?? result.trim().length > 0}
           />
         </CardContent>
       </Card>

@@ -4,12 +4,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { type LengthRecommendation } from "@/lib/utils/star-analyzer";
 
 interface TipsPanelProps {
   className?: string;
+  totalWordCount?: number;
+  lengthRecommendation?: LengthRecommendation;
 }
 
-export function TipsPanel({ className }: TipsPanelProps) {
+export function TipsPanel({ 
+  className, 
+  totalWordCount = 0,
+  lengthRecommendation 
+}: TipsPanelProps) {
   return (
     <Card className={cn("border border-border/50 shadow-sm", className)}>
       <CardHeader className="space-y-2 sm:space-y-3 pb-4 sm:pb-6">
@@ -19,6 +26,22 @@ export function TipsPanel({ className }: TipsPanelProps) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5 sm:space-y-6">
+        {totalWordCount > 0 && lengthRecommendation && (
+          <div className="space-y-2 pb-4 border-b border-border/50">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-serif-body text-sm font-semibold">Length Status</span>
+              <Badge 
+                variant={lengthRecommendation.variant}
+                className="font-serif-body text-xs"
+              >
+                {lengthRecommendation.message}
+              </Badge>
+            </div>
+            <p className="font-serif-body text-xs text-muted-foreground">
+              {totalWordCount} words total
+            </p>
+          </div>
+        )}
         <div className="space-y-4 sm:space-y-5">
           <div>
             <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">

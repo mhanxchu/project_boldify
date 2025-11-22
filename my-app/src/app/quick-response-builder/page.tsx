@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { QuestionLibrary } from "@/components/quick-response-builder/question-library";
 import { StarEditor } from "@/components/quick-response-builder/star-editor";
 import { ExampleViewer } from "@/components/quick-response-builder/example-viewer";
@@ -8,6 +8,9 @@ import { TipsPanel } from "@/components/quick-response-builder/tips-panel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { type InterviewQuestion } from "@/lib/data/interview-questions";
+import { useStarResponseStorage } from "@/lib/hooks/use-local-storage";
+import { validateAndFormatResponse } from "@/app/quick-response-builder/actions";
+import { analyzeStarResponse, getLengthRecommendation } from "@/lib/utils/star-analyzer";
 
 export default function QuickResponseBuilderPage() {
   const [selectedQuestion, setSelectedQuestion] =
@@ -15,12 +18,50 @@ export default function QuickResponseBuilderPage() {
   const [exampleQuestion, setExampleQuestion] =
     useState<InterviewQuestion | null>(null);
   const [isExampleOpen, setIsExampleOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const [copyStatus, setCopyStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
-  // STAR method state
-  const [situation, setSituation] = useState("");
-  const [task, setTask] = useState("");
-  const [action, setAction] = useState("");
-  const [result, setResult] = useState("");
+  // Use localStorage hook for persistence
+  const { responseData, updateResponse, clearResponseData } = useStarResponseStorage();
+
+  // Initialize from localStorage or use empty state
+  const [situation, setSituation] = useState(responseData.situation);
+  const [task, setTask] = useState(responseData.task);
+  const [action, setAction] = useState(responseData.action);
+  const [result, setResult] = useState(responseData.result);
+
+  // Load saved question if available
+  useEffect(() => {
+    if (responseData.questionId && typeof window !== "undefined") {
+      // Import questions dynamically to avoid SSR issues
+      import("@/lib/data/interview-questions").then(({ interviewQuestions }) => {
+        const savedQuestion = interviewQuestions.find(
+          (q) => q.id === responseData.questionId
+        );
+        if (savedQuestion && !selectedQuestion) {
+          setSelectedQuestion(savedQuestion);
+          // Restore saved values
+          setSituation(responseData.situation);
+          setTask(responseData.task);
+          setAction(responseData.action);
+          setResult(responseData.result);
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
+
+  // Save to localStorage whenever state changes
+  useEffect(() => {
+    updateResponse({
+      questionId: selectedQuestion?.id || null,
+      situation,
+      task,
+      action,
+      result,
+    });
+  }, [situation, task, action, result, selectedQuestion?.id, updateResponse]);
 
   const handleSelectQuestion = (question: InterviewQuestion) => {
     setSelectedQuestion(question);
@@ -29,6 +70,7 @@ export default function QuickResponseBuilderPage() {
     setTask("");
     setAction("");
     setResult("");
+    clearResponseData();
   };
 
   const handleViewExample = (question: InterviewQuestion) => {
@@ -36,23 +78,64 @@ export default function QuickResponseBuilderPage() {
     setIsExampleOpen(true);
   };
 
-  const handleCopyAnswer = () => {
-    // Placeholder - no real functionality in Stage 1
-    const fullAnswer = `Situation: ${situation}\n\nTask: ${task}\n\nAction: ${action}\n\nResult: ${result}`;
-    console.log("Would copy to clipboard:", fullAnswer);
-    alert("Copy functionality will be implemented in Stage 2!");
+  const handleCopyAnswer = async () => {
+    if (!selectedQuestion) return;
+
+    setCopyStatus("loading");
+    setErrorMessage("");
+
+    try {
+      // Validate and format using Server Action
+      const validation = await validateAndFormatResponse({
+        situation,
+        task,
+        action,
+        result,
+        questionId: selectedQuestion.id,
+      });
+
+      if (!validation.success) {
+        setCopyStatus("error");
+        setErrorMessage(validation.errors.join(", "));
+        return;
+      }
+
+      // Copy to clipboard
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(validation.formattedResponse || "");
+        setCopyStatus("success");
+        setTimeout(() => setCopyStatus("idle"), 2000);
+      } else {
+        // Fallback for older browsers
+        const textArea = document.createElement("textarea");
+        textArea.value = validation.formattedResponse || "";
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        setCopyStatus("success");
+        setTimeout(() => setCopyStatus("idle"), 2000);
+      }
+    } catch (error) {
+      console.error("Error copying to clipboard:", error);
+      setCopyStatus("error");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to copy to clipboard"
+      );
+      setTimeout(() => {
+        setCopyStatus("idle");
+        setErrorMessage("");
+      }, 3000);
+    }
   };
 
-  const getTotalWordCount = () => {
-    const allText = `${situation} ${task} ${action} ${result}`;
-    return allText.trim().split(/\s+/).filter((word) => word.length > 0).length;
-  };
+  // Use star-analyzer for real-time analysis
+  const analysis = analyzeStarResponse(situation, task, action, result);
+  const lengthRecommendation = getLengthRecommendation(analysis.total.wordCount);
 
-  const isAnswerComplete =
-    situation.trim().length > 0 &&
-    task.trim().length > 0 &&
-    action.trim().length > 0 &&
-    result.trim().length > 0;
+  const isAnswerComplete = analysis.isComplete;
 
   return (
     <main 
@@ -94,6 +177,7 @@ export default function QuickResponseBuilderPage() {
               onTaskChange={setTask}
               onActionChange={setAction}
               onResultChange={setResult}
+              analysis={analysis}
             />
           </section>
 
@@ -105,36 +189,53 @@ export default function QuickResponseBuilderPage() {
                   <div className="space-y-2">
                     <p className="font-serif-body text-base font-semibold tabular-nums">
                       Total: <span 
-                        aria-label={`${getTotalWordCount()} words`} 
+                        aria-label={`${analysis.total.wordCount} words`} 
                         className="text-gold-text font-bold"
                       >
-                        {getTotalWordCount()}
+                        {analysis.total.wordCount}
                       </span> words
                     </p>
-                    <p 
-                      className="font-serif-body text-sm text-muted-foreground"
-                      role="status"
-                      aria-live="polite"
-                    >
-                      {isAnswerComplete
-                        ? "✓ All STAR sections completed"
-                        : "Complete all sections to copy your answer"}
-                    </p>
+                    <div className="space-y-1">
+                      <p 
+                        className="font-serif-body text-sm text-muted-foreground"
+                        role="status"
+                        aria-live="polite"
+                      >
+                        {isAnswerComplete
+                          ? "✓ All STAR sections completed"
+                          : `Complete all sections (${analysis.completedSections}/4) to copy your answer`}
+                      </p>
+                      {analysis.total.wordCount > 0 && (
+                        <p className="font-serif-body text-xs text-muted-foreground">
+                          {lengthRecommendation.message}
+                        </p>
+                      )}
+                      {copyStatus === "error" && errorMessage && (
+                        <p className="font-serif-body text-xs text-destructive" role="alert">
+                          {errorMessage}
+                        </p>
+                      )}
+                      {copyStatus === "success" && (
+                        <p className="font-serif-body text-xs text-green-600 dark:text-green-400" role="status">
+                          ✓ Copied to clipboard!
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <Button
                     onClick={handleCopyAnswer}
-                    disabled={!isAnswerComplete}
+                    disabled={!isAnswerComplete || isPending || copyStatus === "loading"}
                     size="lg"
                     variant="outline"
                     className="font-serif-body border-gold/50 bg-gold/10 hover:bg-gold/20 hover:border-gold/60 text-foreground shadow-sm disabled:opacity-50 disabled:cursor-not-allowed px-8 py-6 text-base tracking-wide focus-visible:ring-gold/50 focus-visible:ring-[3px] transition-all"
-                    aria-disabled={!isAnswerComplete}
+                    aria-disabled={!isAnswerComplete || isPending || copyStatus === "loading"}
                     aria-label={
                       isAnswerComplete
                         ? "Copy your completed answer to clipboard"
                         : "Complete all sections to copy your answer"
                     }
                   >
-                    Copy Answer
+                    {copyStatus === "loading" ? "Copying..." : copyStatus === "success" ? "Copied!" : "Copy Answer"}
                   </Button>
                 </div>
               </CardContent>
@@ -145,7 +246,10 @@ export default function QuickResponseBuilderPage() {
         {/* Sidebar - Tips Panel */}
         <aside className="lg:col-span-1" aria-label="STAR method guide">
           <div className="lg:sticky lg:top-4">
-            <TipsPanel />
+            <TipsPanel 
+              totalWordCount={analysis.total.wordCount}
+              lengthRecommendation={lengthRecommendation}
+            />
           </div>
         </aside>
       </div>
