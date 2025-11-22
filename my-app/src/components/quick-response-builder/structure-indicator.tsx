@@ -19,17 +19,23 @@ export function StructureIndicator({
   className,
 }: StructureIndicatorProps) {
   const sections = [
-    { label: "Situation", completed: situation },
-    { label: "Task", completed: task },
-    { label: "Action", completed: action },
-    { label: "Result", completed: result },
+    { label: "Situation", completed: situation, letter: "S" },
+    { label: "Task", completed: task, letter: "T" },
+    { label: "Action", completed: action, letter: "A" },
+    { label: "Result", completed: result, letter: "R" },
   ];
 
   const allComplete = situation && task && action && result;
+  const completedCount = sections.filter((s) => s.completed).length;
 
   return (
-    <div className={cn("flex flex-wrap items-center gap-2", className)}>
-      <span className="text-sm font-medium text-muted-foreground">
+    <div 
+      className={cn("flex flex-wrap items-center gap-2", className)}
+      role="status"
+      aria-live="polite"
+      aria-label={`STAR structure progress: ${completedCount} of 4 sections completed`}
+    >
+      <span className="text-sm font-semibold text-foreground">
         STAR Structure:
       </span>
       {sections.map((section) => (
@@ -37,15 +43,24 @@ export function StructureIndicator({
           key={section.label}
           variant={section.completed ? "default" : "outline"}
           className={cn(
-            "transition-colors",
-            section.completed && "bg-primary text-primary-foreground"
+            "transition-all duration-200",
+            section.completed 
+              ? "bg-primary text-primary-foreground shadow-sm" 
+              : "border-2"
           )}
+          aria-label={`${section.label} section ${section.completed ? 'completed' : 'incomplete'}`}
         >
-          {section.completed ? "✓" : "○"} {section.label}
+          <span aria-hidden="true">
+            {section.completed ? "✓" : "○"} {section.label}
+          </span>
         </Badge>
       ))}
       {allComplete && (
-        <Badge variant="secondary" className="ml-2">
+        <Badge 
+          variant="secondary" 
+          className="ml-2 animate-in fade-in duration-300"
+          aria-label="All sections complete"
+        >
           Complete
         </Badge>
       )}

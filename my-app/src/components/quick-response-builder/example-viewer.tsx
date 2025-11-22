@@ -22,44 +22,61 @@ export function ExampleViewer({ question, open, onOpenChange }: ExampleViewerPro
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+      <DialogContent 
+        className="max-w-3xl max-h-[85vh] overflow-y-auto"
+        aria-describedby="example-dialog-description"
+      >
         <DialogHeader>
-          <DialogTitle>{question.question}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl">{question.question}</DialogTitle>
+          <DialogDescription id="example-dialog-description">
             <Badge variant="secondary" className="mt-2">
               {question.category}
             </Badge>
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 pt-4">
-          <div>
-            <h3 className="font-semibold mb-2">Example Response</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-              {question.exampleResponse}
-            </p>
-          </div>
+        <div className="space-y-6 pt-4">
+          <section aria-labelledby="example-response-heading">
+            <h3 id="example-response-heading" className="font-semibold text-base mb-3">
+              Example Response
+            </h3>
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                {question.exampleResponse}
+              </p>
+            </div>
+          </section>
           <Separator />
-          <div>
-            <h3 className="font-semibold mb-2">STAR Method Breakdown</h3>
-            <div className="space-y-3 text-sm">
+          <section aria-labelledby="star-breakdown-heading">
+            <h3 id="star-breakdown-heading" className="font-semibold text-base mb-3">
+              STAR Method Breakdown
+            </h3>
+            <div className="space-y-4">
               <div>
-                <Badge variant="outline" className="mb-1">Situation</Badge>
-                <p className="text-muted-foreground">{question.starPrompts.situation}</p>
+                <Badge variant="outline" className="mb-2 font-semibold">Situation</Badge>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {question.starPrompts.situation}
+                </p>
               </div>
               <div>
-                <Badge variant="outline" className="mb-1">Task</Badge>
-                <p className="text-muted-foreground">{question.starPrompts.task}</p>
+                <Badge variant="outline" className="mb-2 font-semibold">Task</Badge>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {question.starPrompts.task}
+                </p>
               </div>
               <div>
-                <Badge variant="outline" className="mb-1">Action</Badge>
-                <p className="text-muted-foreground">{question.starPrompts.action}</p>
+                <Badge variant="outline" className="mb-2 font-semibold">Action</Badge>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {question.starPrompts.action}
+                </p>
               </div>
               <div>
-                <Badge variant="outline" className="mb-1">Result</Badge>
-                <p className="text-muted-foreground">{question.starPrompts.result}</p>
+                <Badge variant="outline" className="mb-2 font-semibold">Result</Badge>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {question.starPrompts.result}
+                </p>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </DialogContent>
     </Dialog>

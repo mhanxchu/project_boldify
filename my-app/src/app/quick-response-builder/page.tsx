@@ -55,46 +55,52 @@ export default function QuickResponseBuilderPage() {
     result.trim().length > 0;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Quick Response Builder</h1>
-        <p className="text-muted-foreground">
+    <main className="container mx-auto px-4 py-8 lg:py-12 max-w-7xl">
+      <header className="mb-10 lg:mb-12">
+        <h1 className="text-4xl font-bold tracking-tight mb-3 lg:text-5xl">
+          Quick Response Builder
+        </h1>
+        <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl">
           Build confident interview answers using the STAR method. Select a question, follow the
           prompts, and get real-time feedback on your response structure.
         </p>
-      </div>
+      </header>
 
-      <div className="grid lg:grid-cols-4 gap-6">
+      <div className="grid lg:grid-cols-4 gap-6 lg:gap-8">
         {/* Main Content Area */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="lg:col-span-3 space-y-6 lg:space-y-8">
           {/* Question Library Section */}
-          <QuestionLibrary
-            selectedQuestionId={selectedQuestion?.id || null}
-            onSelectQuestion={handleSelectQuestion}
-            onViewExample={handleViewExample}
-          />
+          <section aria-labelledby="question-library-heading">
+            <QuestionLibrary
+              selectedQuestionId={selectedQuestion?.id || null}
+              onSelectQuestion={handleSelectQuestion}
+              onViewExample={handleViewExample}
+            />
+          </section>
 
           {/* STAR Editor Section */}
-          <StarEditor
-            question={selectedQuestion}
-            situation={situation}
-            task={task}
-            action={action}
-            result={result}
-            onSituationChange={setSituation}
-            onTaskChange={setTask}
-            onActionChange={setAction}
-            onResultChange={setResult}
-          />
+          <section aria-labelledby="star-editor-heading">
+            <StarEditor
+              question={selectedQuestion}
+              situation={situation}
+              task={task}
+              action={action}
+              result={result}
+              onSituationChange={setSituation}
+              onTaskChange={setTask}
+              onActionChange={setAction}
+              onResultChange={setResult}
+            />
+          </section>
 
           {/* Action Bar */}
           {selectedQuestion && (
-            <Card>
+            <Card aria-live="polite" aria-atomic="true">
               <CardContent className="pt-6">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="space-y-1">
-                    <p className="text-sm font-medium">
-                      Total: {getTotalWordCount()} words
+                    <p className="text-sm font-semibold tabular-nums">
+                      Total: <span aria-label={`${getTotalWordCount()} words`}>{getTotalWordCount()}</span> words
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {isAnswerComplete
@@ -106,6 +112,13 @@ export default function QuickResponseBuilderPage() {
                     onClick={handleCopyAnswer}
                     disabled={!isAnswerComplete}
                     size="lg"
+                    className="transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    aria-disabled={!isAnswerComplete}
+                    aria-label={
+                      isAnswerComplete
+                        ? "Copy your completed answer"
+                        : "Complete all sections to copy"
+                    }
                   >
                     Copy Answer
                   </Button>
@@ -116,9 +129,11 @@ export default function QuickResponseBuilderPage() {
         </div>
 
         {/* Sidebar - Tips Panel */}
-        <div className="lg:col-span-1">
-          <TipsPanel />
-        </div>
+        <aside className="lg:col-span-1" aria-label="STAR method guide">
+          <div className="lg:sticky lg:top-4">
+            <TipsPanel />
+          </div>
+        </aside>
       </div>
 
       {/* Example Viewer Dialog */}
@@ -127,7 +142,7 @@ export default function QuickResponseBuilderPage() {
         open={isExampleOpen}
         onOpenChange={setIsExampleOpen}
       />
-    </div>
+    </main>
   );
 }
 
